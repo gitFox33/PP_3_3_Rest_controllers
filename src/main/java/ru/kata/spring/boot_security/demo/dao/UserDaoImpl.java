@@ -5,6 +5,7 @@ import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
@@ -40,9 +41,13 @@ public class UserDaoImpl implements UserDao {
     @Override
     public User getUserById(Long userId) {
         String jpql = "SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.roles WHERE u.id = :userId";
-        return em.createQuery(jpql, User.class)
-                .setParameter("userId", userId)
-                .getSingleResult();
+        try {
+            return em.createQuery(jpql, User.class)
+                    .setParameter("userId", userId)
+                    .getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     @Override

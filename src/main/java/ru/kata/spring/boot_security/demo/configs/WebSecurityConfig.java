@@ -41,14 +41,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .cors().and()
                 .authorizeRequests()
-                .antMatchers("/", "/index").permitAll()
-                .antMatchers("/admin", "/create", "/edit", "/delete").hasRole("ADMIN")
+                    .antMatchers("/", "/user").permitAll()
+                    .antMatchers( "/create", "/edit", "/delete").permitAll()
                 .and()
                 .formLogin().successHandler(successUserHandler)
                 .and()
                 .logout().logoutUrl("/logout")
-                .logoutSuccessUrl("/login")
+                    .logoutSuccessUrl("/login")
                 .permitAll();
+
+
 
     }
 /**
