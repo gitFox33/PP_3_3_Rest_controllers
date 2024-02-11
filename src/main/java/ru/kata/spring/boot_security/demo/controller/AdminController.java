@@ -10,6 +10,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
@@ -24,7 +25,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/admin")
 public class AdminController {
-    // private final String ADMIN_PAGE = "redirect:/admin";
+
     private final UserService userService;
 
     @Autowired
@@ -57,7 +58,15 @@ public class AdminController {
     }
 
 
-
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<HttpStatus> delete(@PathVariable("id") long id) {
+        userService.deleteUser(id);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
+//    public String deleteUser(@RequestParam(value = "id") long id) {
+//        userService.deleteUser(id);
+//        return ADMIN_PAGE;
+//    }
 
 
 //
