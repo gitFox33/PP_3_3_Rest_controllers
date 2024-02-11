@@ -17,6 +17,7 @@ import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
 import ru.kata.spring.boot_security.demo.utill.UserErrorResponse;
 import ru.kata.spring.boot_security.demo.utill.UserNotCreatedException;
+import ru.kata.spring.boot_security.demo.utill.UserNotEditedException;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
@@ -63,13 +64,26 @@ public class AdminController {
         userService.deleteUser(id);
         return ResponseEntity.ok(HttpStatus.OK);
     }
-//    public String deleteUser(@RequestParam(value = "id") long id) {
-//        userService.deleteUser(id);
-//        return ADMIN_PAGE;
-//    }
+
+    @PostMapping("/edit")
+    public ResponseEntity<HttpStatus> edit(@RequestBody @Valid User user,
+                                           BindingResult bindingResult) {
+        if (bindingResult.hasErrors()) {
+            StringBuilder errorMsg = new StringBuilder();
+            List<FieldError> errors = bindingResult.getFieldErrors();
+            for (FieldError error : errors) {
+                errorMsg.append(error.getField())
+                        .append(" - ").append(error.getDefaultMessage())
+                        .append(";");
+            }
+            throw new UserNotEditedException(errorMsg.toString());
+        }
+        userService.editUser(user.getId(), user);
+        return ResponseEntity.ok(HttpStatus.OK);
+    }
 
 
-//
+    //
 //
 //    @GetMapping("/admin")
 //    public String adminPage(Model model) {
