@@ -22,22 +22,23 @@ public class User implements UserDetails {
     private Long id;
 
     @NotEmpty
-    @Size(min = 2, max = 30, message = "Name should be between 2 and 30 characters")
+    @Size(min = 2, max = 30, message = "Имя должно быть от 2 до 30 символов")
     @Column
     private String name;
 
     @NotEmpty
-    @Email(message = "Email should be valid")
+    @Email(message = "Email является невалидным")
     @Column
     private String email;
     @NotNull
-    @Min(value = 1, message = "Age should be greater than 1")
+    @Min(value = 1, message = "Возраст не может быть меньше 1")
     @Column
     private Integer age;
     @Column(unique = true)
+    @NotEmpty(message = "Имя пользователя не может быть пустым")
     private String username;
-    @Size(min = 1, max = 60, message = " Password should be between 1 and 60 characters")
-    @NotBlank(message = " Name should not be empty")
+    @Size(min = 1, max = 60, message = "Пароль должен быть от 1 до 60 символов")
+    @NotEmpty(message = "Пароль не может быть пустым")
     private String password;
     @ManyToMany(cascade = {CascadeType.MERGE}, fetch = FetchType.LAZY)
     @JoinTable(name = "users_roles",
@@ -95,6 +96,7 @@ public class User implements UserDetails {
         this.username = username;
     }
 
+
     @Override
     public String getPassword() {
         return password;
@@ -135,7 +137,6 @@ public class User implements UserDetails {
     public boolean isCredentialsNonExpired() {
         return true;
     }
-
     @Override
     public boolean isEnabled() {
         return true;

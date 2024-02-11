@@ -21,16 +21,10 @@ public class UserController {
     }
 
 
-
     @GetMapping("/{id}")
     public User getUser(@PathVariable(value = "id") long id) {
 
         return userService.getUserById(id);
-    }
-
-    @GetMapping("/hello")
-    public String sayHello() {
-        return "Hello";
     }
 
     @ExceptionHandler
@@ -40,6 +34,10 @@ public class UserController {
                 System.currentTimeMillis()
         );
         return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+    }
+    @GetMapping("/hello")
+    public String sayHello() {
+        return "Hello";
     }
 }
 

@@ -41,17 +41,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .cors().and()
                 .authorizeRequests()
-                    .antMatchers("/", "/user").permitAll()
-                    .antMatchers( "/create", "/edit", "/delete").permitAll()
-                .and()
+                    .antMatchers("/api/**").permitAll().and().csrf().disable()
                 .formLogin().successHandler(successUserHandler)
                 .and()
                 .logout().logoutUrl("/logout")
                     .logoutSuccessUrl("/login")
                 .permitAll();
-
-
-
     }
 /**
  * Метод configureGlobal настраивает AuthenticationManagerBuilder для использования

@@ -106,6 +106,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         }else {
                 return searchUser;
             }
+
         } catch (NoResultException e) {
             throw new UserNotFoundException("id: " + id);
         }
