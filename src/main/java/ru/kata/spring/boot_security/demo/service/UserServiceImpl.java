@@ -1,25 +1,23 @@
 package ru.kata.spring.boot_security.demo.service;
 
+
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.dao.UserDao;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
-import ru.kata.spring.boot_security.demo.utill.UserNotFoundException;
+import ru.kata.spring.boot_security.demo.util.UserNotFoundException;
 
-
-import javax.persistence.NoResultException;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
-@Component
+@Service
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserDao userDao;
@@ -28,14 +26,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         this.userDao = userDao;
     }
 
-
-    /**
-     * Метод loadUserByUsername является частью Spring Security и используется для
-     * загрузки информации о пользователе по его имени пользователя. Он получает пользователя
-     * из базы данных по его имени пользователя, проверяет его существование, и затем
-     * создает объект UserDetails для этого пользователя, учитывая различные параметры,
-     * такие как активность учетной записи и сроки действия учетных данных.
-     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userDao.getUserByUsername(username);
@@ -52,14 +42,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 credentialsNonExpired, accountNonLocked, getAuthorities(user.getRoles()));
     }
 
-    /**
-     * Метод getAuthorities принимает набор ролей пользователя и преобразует их в
-     * набор разрешений (GrantedAuthority). Он проходит по каждой роли пользователя и
-     * создает объект SimpleGrantedAuthority для каждой роли, используя имя роли в
-     * качестве имени разрешения. Метод возвращает набор разрешений.
-     */
-
-    private static Set<GrantedAuthority> getAuthorities(Set<Role> roles) {
+    private static Set<GrantedAuthority> getAuthorities (Set<Role> roles) {
         Set<GrantedAuthority> authorities = new HashSet<>();
         for (Role role : roles) {
             authorities.add(new SimpleGrantedAuthority(role.getName()));
@@ -68,21 +51,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public String getUserEmail(String username) {
-        User user = userDao.getUserByUsername(username);
-        return user.getEmail();
-    }
-
-    @Override
-    public List<User> getAllUsers() {
-        return userDao.getAllUsers();
-    }
+    @Transactional(readOnly = true)
+    public List<User> getAllUsers(){return userDao.getAllUsers();}
 
     @Override
     @Transactional
-    public void createUser(User user) {
-        userDao.createUser(user);
-    }
+    public void createUser(User user) {userDao.createUser(user);}
 
     @Override
     @Transactional
@@ -96,36 +70,27 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userDao.getRoleByName(roleName);
     }
 
-
     @Override
+    @Transactional(readOnly = true)
     public User getUserById(Long id) {
-        try {
-            User searchUser = userDao.getUserById(id);
-            if (searchUser == null) {
-                throw new UserNotFoundException("id: " + id);
-        }else {
-                return searchUser;
-            }
-
-        } catch (NoResultException e) {
-            throw new UserNotFoundException("id: " + id);
+        User foundUser = userDao.getUserById(id);
+        if (foundUser == null) {
+            throw new UserNotFoundException();
+        } else {
+            return foundUser;
         }
     }
 
+    @Override
+    @Transactional
+    public void editUser(User user) {userDao.editUser(user);}
 
     @Override
     @Transactional
-    public void editUser(Long id, User user) {
-        userDao.editUser(id, user);
-    }
+    public void deleteUser(long id) {userDao.deleteUser(id);}
 
     @Override
-    @Transactional
-    public void deleteUser(long id) {
-        userDao.deleteUser(id);
-    }
-
-    @Override
+    @Transactional(readOnly = true)
     public User getUserByUsername(String username) {
         return userDao.getUserByUsername(username);
     }

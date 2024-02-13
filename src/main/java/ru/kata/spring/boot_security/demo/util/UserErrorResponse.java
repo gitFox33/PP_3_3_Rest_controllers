@@ -1,9 +1,8 @@
-package ru.kata.spring.boot_security.demo.utill;
+package ru.kata.spring.boot_security.demo.util;
 
 public class UserErrorResponse {
     private String message;
     private long timestamp;
-
 
     public UserErrorResponse(String message, long timestamp) {
         this.message = message;

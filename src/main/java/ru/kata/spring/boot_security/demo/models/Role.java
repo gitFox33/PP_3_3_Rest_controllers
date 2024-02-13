@@ -8,7 +8,6 @@ import java.util.Objects;
 @Entity
 @Table(name = "roles")
 public class Role implements GrantedAuthority {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -17,7 +16,7 @@ public class Role implements GrantedAuthority {
     public Role() {
     }
 
-    public Role(Long id) {
+    public Role(long id) {
         this.id = id;
     }
 
@@ -25,11 +24,10 @@ public class Role implements GrantedAuthority {
         this.name = name;
     }
 
-    public Role(Long id, String name) {
+    public Role(long id, String name) {
         this.id = id;
         this.name = name;
     }
-
 
     public long getId() {
         return id;
@@ -54,7 +52,7 @@ public class Role implements GrantedAuthority {
 
     @Override
     public String toString() {
-        return name;
+        return name.substring(5);
     }
 
     @Override
@@ -62,11 +60,11 @@ public class Role implements GrantedAuthority {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Role role = (Role) o;
-        return Objects.equals(id, role.id);
+        return Objects.equals(id, role.id) && Objects.equals(name, role.name);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(id, name);
     }
 }

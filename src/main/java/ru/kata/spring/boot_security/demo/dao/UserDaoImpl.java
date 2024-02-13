@@ -1,11 +1,11 @@
 package ru.kata.spring.boot_security.demo.dao;
 
+
 import org.springframework.stereotype.Repository;
 import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 
 import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import java.util.List;
 
@@ -39,27 +39,20 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public User getUserById(Long userId) {
-        String jpql = "SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.roles WHERE u.id = :userId";
-        try {
-            return em.createQuery(jpql, User.class)
-                    .setParameter("userId", userId)
-                    .getSingleResult();
-        } catch (NoResultException e) {
-            return null;
-        }
+    public User getUserById(Long id) {
+        return em.find(User.class, id);
     }
 
     @Override
     public User getUserByUsername(String username) {
-        String jpql = "SELECT DISTINCT u FROM User u LEFT JOIN FETCH u.roles WHERE u.username = :username";
+        String jpql = "SELECT u FROM User u WHERE u.username = :username";
         return em.createQuery(jpql, User.class).setParameter("username", username)
                 .getSingleResult();
     }
 
     @Override
-    public void editUser(Long id, User user) {
-        User userToBeEdit = em.find(User.class, id);
+    public void editUser(User user) {
+        User userToBeEdit = em.find(User.class, user.getId());
         userToBeEdit.setName(user.getName());
         userToBeEdit.setEmail(user.getEmail());
         userToBeEdit.setAge(user.getAge());
@@ -73,6 +66,5 @@ public class UserDaoImpl implements UserDao {
     public void deleteUser(long id) {
         em.remove(em.find(User.class, id));
     }
-
 
 }
