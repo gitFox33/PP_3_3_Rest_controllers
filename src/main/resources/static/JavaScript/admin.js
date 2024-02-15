@@ -1,4 +1,3 @@
-
 const currentPath = window.location.pathname;
 let currentUser;
 let usersList;
