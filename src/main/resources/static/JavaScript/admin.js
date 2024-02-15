@@ -1,3 +1,4 @@
+
 const currentPath = window.location.pathname;
 let currentUser;
 let usersList;
@@ -214,3 +215,6 @@ document.getElementById('createBtn').addEventListener('click', function () {
             console.error('Error submitting form data:', error);
         });
 });
+
+
+
